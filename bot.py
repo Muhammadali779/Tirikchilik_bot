@@ -1,105 +1,38 @@
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-
+from telegram.ext import (
+    ApplicationBuilder, CommandHandler, MessageHandler, filters
+)
 from config import Config
-from handlers import (start, about_us, order, show_info, main_menu, 
-comment, like_bot, back, good_bot, satisfactory_bot, not_like_bot,
-complaint_bot, sent_order, contact)
+from handlers import (
+    start, about_us, order, show_info, main_menu,
+    comment, like_bot, back, good_bot, satisfactory_bot,
+    not_like_bot, complaint_bot, sent_order, contact
+)
 
 
-def main() -> None:
-    updater = Updater(Config.TOKEN)
-    dispatcher = updater.dispatcher
+def main():
+    app = ApplicationBuilder().token(Config.TOKEN).build()
 
-    dispatcher.add_handler(
-        handler=CommandHandler(
-            command='start',
-            callback=start
-        )
-    )
-    
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('💼 Hamkorlik'),
-            callback=about_us
-        )
-    )
-    
-    dispatcher.add_handler(
-       handler=MessageHandler(
-           filters=Filters.text('📥Savat'),
-           callback=order
-       ) 
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('ℹ️ Ma\'lumot'),
-            callback=show_info
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('🏠 Bosh menyu'),
-            callback=main_menu
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('✍️ Izoh qoldirish'),
-            callback=comment
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('😊Menga hamma narsa yoqdi, 5 ❤️'),
-            callback=like_bot
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text("⬅️ Orqaga"),
-            callback=back
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('☺️Yaxshi, 4 ⭐️⭐️⭐️⭐️'),
-            callback=good_bot
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('😐Qo\'niqarli, 3⭐️⭐️⭐️'),
-            callback=satisfactory_bot
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('☹️Yoqmadi, 2 ⭐️⭐️'),
-            callback=not_like_bot
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('😤Men shikoyat qilmoqchiman 👎🏻'),
-            callback=complaint_bot
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('🚀 Yetkazib berish shartlari'),
-            callback=sent_order
-        )
-    )
-    dispatcher.add_handler(
-        handler=MessageHandler(
-            filters=Filters.text('☎️ Kontaktlar'),
-            callback=contact
-        )
-    )
- 
- 
+    # /start
+    app.add_handler(CommandHandler("start", start))
 
-    updater.start_polling()
-    updater.idle()
+    # Matnli tugmalar
+    app.add_handler(MessageHandler(filters.Text("💼 Hamkorlik"), about_us))
+    app.add_handler(MessageHandler(filters.Text("📥Savat"), order))
+    app.add_handler(MessageHandler(filters.Text("ℹ️ Ma'lumot"), show_info))
+    app.add_handler(MessageHandler(filters.Text("🏠 Bosh menyu"), main_menu))
+    app.add_handler(MessageHandler(filters.Text("✍️ Izoh qoldirish"), comment))
+    app.add_handler(MessageHandler(filters.Text("😊Menga hamma narsa yoqdi, 5 ❤️"), like_bot))
+    app.add_handler(MessageHandler(filters.Text("⬅️ Orqaga"), back))
+    app.add_handler(MessageHandler(filters.Text("☺️Yaxshi, 4 ⭐️⭐️⭐️⭐️"), good_bot))
+    app.add_handler(MessageHandler(filters.Text("😐Qo'niqarli, 3⭐️⭐️⭐️"), satisfactory_bot))
+    app.add_handler(MessageHandler(filters.Text("☹️Yoqmadi, 2 ⭐️⭐️"), not_like_bot))
+    app.add_handler(MessageHandler(filters.Text("😤Men shikoyat qilmoqchiman 👎🏻"), complaint_bot))
+    app.add_handler(MessageHandler(filters.Text("🚀 Yetkazib berish shartlari"), sent_order))
+    app.add_handler(MessageHandler(filters.Text("☎️ Kontaktlar"), contact))
 
-main()
+    print("Bot ishga tushdi...")
+    app.run_polling()
+
+
+if __name__ == "__main__":
+    main()
